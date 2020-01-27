@@ -2,12 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "pretty": true,
     "sourceMap": true,
     "target": "es6",
     "outDir": "./dist",
-    "baseUrl": "./lib"
+    "baseUrl": "./src"
   },
-  "include": ["lib/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
