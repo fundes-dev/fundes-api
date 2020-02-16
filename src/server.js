@@ -1,22 +1,24 @@
-import * as dotenv from 'dotenv';
-import * as express from 'express';
-import connectDB from './config/db';
-dotenv.config();
+const dotenv = require('dotenv');
+const express = require('express');
 
+const connectDB = require('./config/db')
+const userRouter = require('./routes/user/user');
+
+dotenv.config();
 const app = express();
 
 // Connect Database
 connectDB();
 
-interface Options {
-  extended: boolean;
-}
 // Init MiddleWare
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('API Running'));
+app.get('/', (req, res) => {
+  return res.send('API Running')
+});
 
 // // Define ROutes
+app.use('/user', userRouter);
 // app.use('/api/users', require('./routes/api/users'));
 // app.use('/api/auth', require('./routes/api/auth'));
 // app.use('/api/profile', require('./routes/api/profile'));
