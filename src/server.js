@@ -2,7 +2,8 @@ const dotenv = require('dotenv');
 const express = require('express');
 
 const connectDB = require('./config/db')
-const userRouter = require('./routes/user/user');
+const userRouter = require('./routes/user');
+const authRouter = require('./routes/auth');
 
 dotenv.config();
 const app = express();
@@ -18,7 +19,9 @@ app.get('/', (req, res) => {
 });
 
 // // Define ROutes
-app.use('/user', userRouter);
+app.use('api/user', userRouter);
+app.use('api/auth', authRouter);
+
 // app.use('/api/users', require('./routes/api/users'));
 // app.use('/api/auth', require('./routes/api/auth'));
 // app.use('/api/profile', require('./routes/api/profile'));
