@@ -29,7 +29,8 @@
     "mem": ">=4.0.0",
     "mongoose": "^5.8.9",
     "request": "^2.88.0",
-    "uuid": "^3.4.0"
+    "uuid": "^3.4.0",
+    "validator": "^12.2.0"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

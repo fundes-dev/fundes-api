@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 // // Define ROutes
 app.use('api/user', userRouter);
-app.use('api/auth', authRouter);
+// app.use('api/auth', authRouter);
 
 // app.use('/api/users', require('./routes/api/users'));
 // app.use('/api/auth', require('./routes/api/auth'));
