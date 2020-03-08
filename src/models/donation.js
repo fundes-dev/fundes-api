@@ -7,7 +7,12 @@ const donationSchema = new Schema({
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
+    validate(value) {
+      if (value < 0) {
+        throw new Error('Amount must be a positive number')
+      }
+    }
   },
   startDate: {
     type: Date,
@@ -16,6 +21,9 @@ const donationSchema = new Schema({
   },
   endDate: {
     type: Date,
+  },
+  recurrence: {
+    enum: ["once", "weekly", "monthly"]
   },
   transactions: {
     type: [String],
