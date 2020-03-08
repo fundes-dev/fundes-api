@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const localURI = "mongodb://localhost:27017/note-app";
+const localURI = "mongodb://localhost:27017/fundes";
 
 const connectDB = async () => {
   try {
