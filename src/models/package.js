@@ -1,17 +1,17 @@
 const { Schema, model } = require('mongoose');
 
 const packageSchema = new Schema({
-  lastName: {
+  name: {
     type: String,
-    required: true
+    required: true,
   },
   npmLink: {
     type: String,
-    required: true
+    required: true,
   },
   homePage: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
@@ -19,7 +19,7 @@ const packageSchema = new Schema({
   },
   maintainers: {
     type: [String],
-    required: true
+    required: true,
   },
   transactions: {
     type: [String],

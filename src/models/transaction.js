@@ -3,18 +3,18 @@ const { Schema, model } = require('mongoose');
 const transactionSchema = new Schema({
   user: {
     type: String,
-    required: true
+    required: true,
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
   },
   date: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   },
-  package: {
+  packageName: {
     type: [String],
     required: true,
   },

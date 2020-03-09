@@ -14,9 +14,9 @@ const auth = (req, res, next) => {
     const decoded = jwt.verify(token, config.get('jwtSecret'));
 
     req.user = decoded.user;
-    next();
+    return next();
   } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
+    return res.status(401).json({ msg: 'Token is not valid' });
   }
 };
 

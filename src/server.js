@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const express = require('express');
 
-const connectDB = require('./config/db')
+const connectDB = require('./config/db');
 const userRouter = require('./routes/user');
 const transactionRouter = require('./routes/transaction');
 
@@ -14,9 +14,7 @@ connectDB();
 // Init MiddleWare
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  return res.send('API Running')
-});
+app.get('/', (req, res) => res.send('API Running'));
 
 // // Define ROutes
 app.use('/api/user', userRouter);

@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const validator = require('validator')
+const validator = require('validator');
 const bcrpyt = require('bcryptjs');
 
 const userSchema = new Schema({
@@ -25,31 +25,31 @@ const userSchema = new Schema({
     lowercase: true,
     validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error('Email is invalid')
+        throw new Error('Email is invalid');
       }
-    }
+    },
   },
   stripeToken: {
     type: String,
   },
   adminOf: {
-    type: [String]
+    type: [String],
   },
   transactions: {
-    type: [String]
+    type: [String],
   },
   tokens: [{
     token: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   }],
   avatar: {
-    type: Buffer
-  }
+    type: Buffer,
+  },
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function encryptPassword(next) {
   const user = this;
 
   try {
@@ -64,9 +64,9 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-userSchema.methods.comparePasswords = function (password) {
+userSchema.methods.comparePasswords = function comparePasswords(password) {
   const user = this;
   return bcrpyt.compare(password, user.password);
-}
+};
 
 module.exports = model('User', userSchema);

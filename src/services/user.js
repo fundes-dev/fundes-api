@@ -1,27 +1,33 @@
 const User = require('../models/user');
 
-const createUser = async ({ email, password, firstName, lastName }) => {
-  try {
-    const newUser = new User({
-      email,
-      password,
-      firstName,
-      lastName
-    });
-    const user = await newUser.save();
-    return user;
-  } catch (ex) {
-    throw ex;
-  }
+const createUser = async ({
+  email, password, firstName, lastName,
+}) => {
+  const newUser = new User({
+    email,
+    password,
+    firstName,
+    lastName,
+  });
+  const user = await newUser.save();
+  return user;
 };
 
 const findUserByEmail = async (email) => {
-  try {
-    const user = await User.findOne({ email });
-    return user;
-  } catch (ex) {
-    throw ex;
-  }
-}
+  const user = await User.findOne({ email });
+  return user;
+};
 
-module.exports = { createUser, findUserByEmail }
+const findUserById = async (_id) => {
+  const user = await User.findOne({ _id });
+  return user;
+};
+
+const updateUserById = async (_id, body = {}) => {
+  const user = await User.findOneAndUpdate(_id, body, { new: true, runValidators: true });
+  return user;
+};
+
+module.exports = {
+  createUser, findUserByEmail, findUserById, updateUserById,
+};

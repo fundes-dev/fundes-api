@@ -4,24 +4,25 @@ const postTransaction = async ({
   user,
   amount,
   date,
-  package,
+  packageName,
   fundesFee,
-  stripeFee
+  stripeFee,
 }) => {
-  try {
-    const newTransaction = new Transaction({
-      user,
-      amount,
-      date,
-      package,
-      fundesFee,
-      stripeFee
-    });
-    const transaction = await newTransaction.save();
-    return transaction;
-  } catch (ex) {
-    throw ex;
-  }
+  const newTransaction = new Transaction({
+    user,
+    amount,
+    date,
+    packageName,
+    fundesFee,
+    stripeFee,
+  });
+  const transaction = await newTransaction.save();
+  return transaction;
 };
 
-module.exports = { postTransaction }
+const findTransactionById = async (_id) => {
+  const transaction = await Transaction.findOne({ _id });
+  return transaction;
+};
+
+module.exports = { postTransaction, findTransactionById };
