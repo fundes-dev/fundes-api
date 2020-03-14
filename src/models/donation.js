@@ -32,6 +32,10 @@ const donationSchema = new Schema({
   packageId: {
     type: String,
   },
+  isActive: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 module.exports = model('Donation', donationSchema);

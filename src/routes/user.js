@@ -1,7 +1,7 @@
 const express = require('express');
 const User = require('../models/user');
 const {
-  createUser, findUserByEmail, findUserById, updateUserById,
+  createUser, findUserByEmail, findUserById, deleteUserById,
 } = require('../services/user');
 
 const router = express.Router();
@@ -57,14 +57,11 @@ router.route('/:id')
     } catch (e) {
       return res.status(500).json({ message: 'internal server error' });
     }
-  });
-
-router.route('/:id')
+  })
   .patch(async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['email', 'password', 'firstName', 'lastName'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
-
     if (!isValidOperation) {
       return res.status(400).send({ message: 'this operation is not valid' });
     }
@@ -72,7 +69,25 @@ router.route('/:id')
     const _id = req.params.id;
     const { body } = req;
     try {
-      const user = await updateUserById(_id, body);
+      const user = await findUserById(_id);
+      if (!user) {
+        return res.status(404).json({ message: 'user not found' });
+      }
+      updates.forEach((update) => {
+        user[update] = body[update];
+        return null;
+      });
+      await user.save();
+
+      return res.status(200).json({ data: { user } });
+    } catch (e) {
+      return res.status(500).json({ message: 'internal server error' });
+    }
+  })
+  .delete(async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await deleteUserById(id);
       if (!user) {
         return res.status(404).json({ message: 'user not found' });
       }
@@ -98,16 +113,16 @@ router.route('/login')
 
     try {
       // does the user exist?
-      const user = await User.findOne({ email });
+      const user = await findUserByEmail(email);
       if (!user) {
-        res.status(400).json({ message: 'password and email do not match' });
+        res.status(400).json({ message: 'unable to login' });
         return;
       }
 
       // does the password match?
       const isMatch = await user.comparePasswords(password);
       if (!isMatch) {
-        res.status(400).json({ message: 'password and email do not match' });
+        res.status(400).json({ message: 'unable to login' });
         return;
       }
 
