@@ -28,6 +28,11 @@ const updateUserById = async (_id, body = {}) => {
   return user;
 };
 
+const deleteUserById = async (_id) => {
+  const user = await User.findByIdAndDelete(_id);
+  return user;
+};
+
 module.exports = {
-  createUser, findUserByEmail, findUserById, updateUserById,
+  createUser, findUserByEmail, findUserById, updateUserById, deleteUserById,
 };

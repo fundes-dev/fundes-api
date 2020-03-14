@@ -15,7 +15,7 @@ const transactionSchema = new Schema({
     required: true,
   },
   packageName: {
-    type: [String],
+    type: String,
     required: true,
   },
   fundesFee: {
@@ -23,6 +23,10 @@ const transactionSchema = new Schema({
   },
   stripeFee: {
     type: Number,
+  },
+  donationRef: {
+    type: String,
+    required: true,
   },
 });
 

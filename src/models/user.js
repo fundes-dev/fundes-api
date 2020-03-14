@@ -52,16 +52,12 @@ const userSchema = new Schema({
 userSchema.pre('save', async function encryptPassword(next) {
   const user = this;
 
-  try {
-    if (user.isModified('password') || user.isNew) {
-      const encrpytedPassword = await bcrpyt.hash(user.password, 10);
-      user.password = encrpytedPassword;
-    }
-
-    next();
-  } catch (ex) {
-    next(ex);
+  if (user.isModified('password') || user.isNew) {
+    const encryptedPassword = await bcrpyt.hash(user.password, 8);
+    user.password = encryptedPassword;
   }
+
+  next();
 });
 
 userSchema.methods.comparePasswords = function comparePasswords(password) {
