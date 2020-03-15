@@ -1,8 +1,8 @@
 const express = require('express');
-const User = require('../models/user');
 const {
-  createUser, findUserByEmail, findUserById, deleteUserById,
+  createUser, findUserByEmail,
 } = require('../services/user');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -11,54 +11,44 @@ router.route('/')
     const {
       email, password, firstName, lastName,
     } = req.body;
-    if (!email || email === '') {
-      res.status(400).json({ message: 'email must be provided' });
-      return;
-    }
-
-    if (!password || password === '') {
-      res.status(400).json({ message: 'password must be provided' });
-      return;
-    }
-    if (!firstName || firstName === '') {
-      res.status(400).json({ message: 'firstName must be provided' });
-      return;
-    }
-    if (!lastName || lastName === '') {
-      res.status(400).json({ message: 'lastName must be provided' });
+    if (!email || !password || !firstName || !lastName) {
+      res.status(400).send({ message: 'invalid request' });
       return;
     }
 
     try {
       const foundUser = await findUserByEmail(email);
       if (foundUser) {
-        res.status(400).json({ message: `email '${email}' already exists'` });
+        res.status(400).send({ message: `email '${email}' already exists'` });
         return;
       }
 
       const user = await createUser({
         email, password, firstName, lastName,
       });
-      res.json({ data: { id: user._id } });
+      const token = await user.generateAuthToken();
+      res.send({ data: { user, token } });
     } catch (ex) {
-      res.status(500).json({ message: 'internal server error' });
+      res.status(500).send({ message: 'internal server error' });
     }
   });
 
-router.route('/:id')
-  .get(async (req, res) => {
-    const _id = req.params.id;
+router.route('/me')
+  .get(auth, async (req, res) => {
+    const { user } = req;
+    res.status(200).send({ user });
+  })
+  .delete(auth, async (req, res) => {
+    const { user } = req;
     try {
-      const user = await findUserById(_id);
-      if (!user) {
-        return res.status(404).json({ message: 'user not found' });
-      }
-      return res.status(200).json({ data: { user } });
+      await user.remove();
+      return res.status(200).send({ user });
     } catch (e) {
-      return res.status(500).json({ message: 'internal server error' });
+      return res.status(500).send({ message: 'internal server error' });
     }
   })
-  .patch(async (req, res) => {
+
+  .patch(auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['email', 'password', 'firstName', 'lastName'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -66,69 +56,68 @@ router.route('/:id')
       return res.status(400).send({ message: 'this operation is not valid' });
     }
 
-    const _id = req.params.id;
-    const { body } = req;
+    const { body, user } = req;
     try {
-      const user = await findUserById(_id);
-      if (!user) {
-        return res.status(404).json({ message: 'user not found' });
-      }
       updates.forEach((update) => {
         user[update] = body[update];
         return null;
       });
       await user.save();
 
-      return res.status(200).json({ data: { user } });
+      return res.status(200).send({ data: { user } });
     } catch (e) {
-      return res.status(500).json({ message: 'internal server error' });
-    }
-  })
-  .delete(async (req, res) => {
-    const { id } = req.params;
-    try {
-      const user = await deleteUserById(id);
-      if (!user) {
-        return res.status(404).json({ message: 'user not found' });
-      }
-      return res.status(200).json({ data: { user } });
-    } catch (e) {
-      return res.status(500).json({ message: 'internal server error' });
+      return res.status(500).send({ message: 'internal server error' });
     }
   });
-
 
 router.route('/login')
   .post(async (req, res) => {
     const { email, password } = req.body;
-    if (!email || email === '') {
-      res.status(400).json({ message: 'email must be provided' });
-      return;
-    }
-
-    if (!password || password === '') {
-      res.status(400).json({ message: 'password must be provided' });
+    if (!email || !password) {
+      res.status(400).send({ message: 'invalid request' });
       return;
     }
 
     try {
-      // does the user exist?
       const user = await findUserByEmail(email);
       if (!user) {
-        res.status(400).json({ message: 'unable to login' });
+        res.status(400).send({ message: 'unable to login' });
         return;
       }
 
-      // does the password match?
       const isMatch = await user.comparePasswords(password);
       if (!isMatch) {
-        res.status(400).json({ message: 'unable to login' });
+        res.status(400).send({ message: 'unable to login' });
         return;
       }
-
-      res.json({ data: { id: user._id } });
+      const token = await user.generateAuthToken();
+      res.send({ user, token });
     } catch (e) {
-      res.status(500).json({ message: 'internal server error' });
+      res.status(500).send({ message: 'internal server error' });
+    }
+  });
+
+router.route('/logout')
+  .post(auth, async (req, res) => {
+    const { user, token: reqToken } = req;
+    try {
+      user.tokens = user.tokens.filter((token) => token.token !== reqToken);
+      await user.save();
+      res.send();
+    } catch (e) {
+      res.status(500).send({ message: 'internal server error' });
+    }
+  });
+
+router.route('/logout-all')
+  .post(auth, async (req, res) => {
+    const { user } = req;
+    try {
+      user.tokens = [];
+      await user.save();
+      res.send();
+    } catch (e) {
+      res.status(500).send({ message: 'internal server error' });
     }
   });
 
