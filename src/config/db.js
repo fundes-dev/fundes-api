@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
-const localURI = 'mongodb://localhost:27017/fundes';
+
+const localURI = process.env.DB_ENV === 'local' ? 'mongodb://localhost:27017/fundes' : process.env.MONGO_URI;
+
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || localURI, {
+    await mongoose.connect(localURI, {
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
