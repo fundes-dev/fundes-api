@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 const validator = require('validator');
 const bcrpyt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new Schema({
   firstName: {
@@ -60,9 +61,30 @@ userSchema.pre('save', async function encryptPassword(next) {
   next();
 });
 
+userSchema.methods.generateAuthToken = async function generateAuthToken() {
+  const user = this;
+  const userId = user._id.toString();
+
+  const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET);
+  user.tokens = [...user.tokens, { token }];
+
+  await user.save();
+  return token;
+};
+
 userSchema.methods.comparePasswords = function comparePasswords(password) {
   const user = this;
   return bcrpyt.compare(password, user.password);
+};
+
+userSchema.methods.toJSON = function getPublicProfile() {
+  const user = this;
+  const publicUser = user.toObject();
+
+  delete publicUser.password;
+  delete publicUser.tokens;
+
+  return publicUser;
 };
 
 module.exports = model('User', userSchema);

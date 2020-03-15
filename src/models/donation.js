@@ -1,9 +1,14 @@
 const { Schema, model } = require('mongoose');
 
 const donationSchema = new Schema({
-  user: {
-    type: [String],
+  userID: {
+    type: Schema.Types.ObjectId,
     required: true,
+  },
+  recurrence: {
+    type: String,
+    enum: ['once', 'weekly', 'monthly'],
+    default: 'once',
   },
   amount: {
     type: Number,
@@ -22,15 +27,13 @@ const donationSchema = new Schema({
   endDate: {
     type: Date,
   },
-  recurrence: {
-    enum: ['once', 'weekly', 'monthly'],
-  },
-  transactions: {
-    type: [String],
+  transactionIDs: {
+    type: [Schema.Types.ObjectId],
     required: true,
   },
-  packageId: {
-    type: String,
+  packageID: {
+    type: [Schema.Types.ObjectId],
+    required: true,
   },
   isActive: {
     type: Boolean,
