@@ -3,6 +3,7 @@ const express = require('express');
 
 const connectDB = require('./config/db');
 const userRouter = require('./routes/user');
+const packageRouter = require('./routes/package');
 const transactionRouter = require('./routes/transaction');
 
 dotenv.config();
@@ -19,11 +20,8 @@ app.get('/', (req, res) => res.send('API Running'));
 // // Define ROutes
 app.use('/api/user', userRouter);
 app.use('/api/transaction', transactionRouter);
+app.use('/api/package', packageRouter);
 
-// app.use('/api/users', require('./routes/api/users'));
-// app.use('/api/auth', require('./routes/api/auth'));
-// app.use('/api/profile', require('./routes/api/profile'));
-// app.use('/api/posts', require('./routes/api/posts'));
 
 const PORT = process.env.PORT || 5000;
 
