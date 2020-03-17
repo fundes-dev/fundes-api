@@ -1,11 +1,11 @@
 const { Schema, model } = require('mongoose');
 
-const packageSchema = new Schema({
+const nodePackageSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
-  npmLink: {
+  npmID: {
     type: String,
     required: true,
   },
@@ -18,12 +18,26 @@ const packageSchema = new Schema({
     required: true,
   },
   maintainers: {
-    type: [String],
+    type: [{
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
+    }],
     required: true,
   },
   transactions: {
-    type: [String],
+    type: [Schema.Types.ObjectId],
+    required: true,
+  },
+  donations: {
+    type: [Schema.Types.ObjectId],
+    required: true,
   },
 });
 
-module.exports = model('Package', packageSchema);
+module.exports = model('package', nodePackageSchema);
