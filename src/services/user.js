@@ -8,6 +8,8 @@ const createUser = async ({
     password,
     firstName,
     lastName,
+    donations: [],
+    transactions: [],
   });
   const user = await newUser.save();
   return user;

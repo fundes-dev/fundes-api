@@ -2,9 +2,12 @@ const dotenv = require('dotenv');
 const express = require('express');
 
 const connectDB = require('./config/db');
+
 const userRouter = require('./routes/user');
 const packageRouter = require('./routes/package');
 const transactionRouter = require('./routes/transaction');
+const donationRouter = require('./routes/donation');
+
 
 dotenv.config();
 const app = express();
@@ -17,8 +20,9 @@ app.use(express.json());
 
 app.get('/', (req, res) => res.send('API Running'));
 
-// // Define ROutes
+// Define ROutes
 app.use('/api/user', userRouter);
+app.use('/api/donation', donationRouter);
 app.use('/api/transaction', transactionRouter);
 app.use('/api/package', packageRouter);
 

@@ -27,6 +27,7 @@ router.route('/')
           maintainers: [...maintainers],
           homePage: homepage,
           transactions: [],
+          donations: [],
         });
         await newPackage.save();
         return res.status(200).json({ data: newPackage });
