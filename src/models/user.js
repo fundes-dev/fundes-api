@@ -38,9 +38,15 @@ const userSchema = new Schema({
   },
   transactions: {
     type: [Schema.Types.ObjectId],
+    required: true,
   },
   donations: {
     type: [Schema.Types.ObjectId],
+    required: true,
+  },
+  supportedPackages: {
+    type: [Schema.Types.ObjectId],
+    required: true,
   },
   tokens: [{
     token: {

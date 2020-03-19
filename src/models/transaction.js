@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const transactionSchema = new Schema({
   user: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   amount: {
@@ -14,18 +14,20 @@ const transactionSchema = new Schema({
     default: Date.now,
     required: true,
   },
-  packageName: {
-    type: String,
-    required: true,
-  },
   fundesFee: {
     type: Number,
+    required: true,
   },
   stripeFee: {
     type: Number,
+    required: true,
   },
-  donationRef: {
-    type: String,
+  packageID: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  donationID: {
+    type: Schema.Types.ObjectId,
     required: true,
   },
 });

@@ -39,6 +39,10 @@ router.route('/')
 
       // add donation ref to user
       user.donations = [...user.donations, newDonation._id];
+
+      // add package ref to user
+      user.supportedPackages = [...user.supportedPackages, packageID];
+
       await user.save();
 
       res.status(200).json({
