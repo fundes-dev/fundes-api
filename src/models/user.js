@@ -37,7 +37,10 @@ const userSchema = new Schema({
     type: [String],
   },
   transactions: {
-    type: [String],
+    type: [Schema.Types.ObjectId],
+  },
+  donations: {
+    type: [Schema.Types.ObjectId],
   },
   tokens: [{
     token: {

@@ -32,7 +32,7 @@ const donationSchema = new Schema({
     required: true,
   },
   packageID: {
-    type: [Schema.Types.ObjectId],
+    type: Schema.Types.ObjectId,
     required: true,
   },
   isActive: {
