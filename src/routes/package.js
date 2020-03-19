@@ -1,8 +1,6 @@
 const express = require('express');
 const fetch = require('node-fetch');
-// const util = require('util');
-const NodePackage = require('../models/package');
-// console.log(util.inspect(data, false, null, true /* enable colors */));
+const NpmPackage = require('../models/package');
 
 const router = express.Router();
 
@@ -10,9 +8,9 @@ router.route('/')
   .get(async (req, res) => {
     const { name } = req.body;
     try {
-      const nodePackage = await NodePackage.findOne({ name });
-      if (nodePackage) {
-        return res.status(200).json({ nodePackage });
+      const npmPackage = await NpmPackage.findOne({ name });
+      if (npmPackage) {
+        return res.status(200).json({ npmPackage });
       }
       const response = await fetch(`https://registry.npmjs.org/${name}`);
       const data = await response.json();
@@ -20,7 +18,7 @@ router.route('/')
         const {
           _id, name: pkgName, description, maintainers, homepage,
         } = data;
-        const newPackage = new NodePackage({
+        const newPackage = new NpmPackage({
           npmID: _id,
           name: pkgName,
           description,

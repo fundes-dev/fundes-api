@@ -1,48 +1,62 @@
 const express = require('express');
-const { postTransaction, findTransactionById } = require('../services/transaction');
+const auth = require('../middleware/auth');
+
+const Transaction = require('../models/transaction');
+const NPMPackage = require('../models/package');
+const Donation = require('../models/donation');
 
 const router = express.Router();
 
 
 router.route('/')
-  .post(async (req, res) => {
+  .post(auth, async (req, res) => {
     const {
       user,
-      amount,
-      date,
-      packageName,
-      fundesFee,
-      stripeFee,
-    } = req.body;
-    if (!user || user === '') {
-      res.status(400).json({ message: 'user must be provided' });
-      return;
-    }
+      body: {
+        amount, packageID, donationID,
+      },
+    } = req;
 
-    if (!amount || amount === '') {
-      res.status(400).json({ message: 'amount must be provided' });
-      return;
-    }
-    if (!date || date === '') {
-      res.status(400).json({ message: 'date must be provided' });
-      return;
-    }
-    if (!packageName || packageName === '') {
-      res.status(400).json({ message: 'packageName must be provided' });
+    if (!amount || !packageID || !donationID) {
+      res.status(400).json({ message: 'invalid request' });
       return;
     }
 
     try {
-      const transaction = await postTransaction({
+      const newTransaction = new Transaction({
         user,
         amount,
-        date,
-        packageName,
-        fundesFee,
-        stripeFee,
+        packageID,
+        donationID,
+        fundesFee: 0,
+        stripeFee: 0,
       });
-      res.json({ data: { id: transaction._id } });
-    } catch (ex) {
+
+      const transaction = await newTransaction.save();
+
+      const npmPackage = await NPMPackage.findById(packageID);
+      const donation = await Donation.findById(donationID);
+
+      if (!npmPackage || !donation) {
+        res.status(400).json({ message: 'resources not found' });
+        return;
+      }
+
+      // add transaction ref to package
+      npmPackage.transactions = [...npmPackage.transactions, transaction._id];
+      await npmPackage.save();
+
+      // add transaction ref to user
+      user.transactions = [...user.transactions, transaction._id];
+      await user.save();
+
+      // add transaction ref to donation
+      donation.transactionIDs = [...donation.transactionIDs, transaction._id];
+      await donation.save();
+
+      res.send({ transaction: { id: transaction._id } });
+    } catch (e) {
+      console.log(e);
       res.status(500).json({ message: 'internal server error' });
     }
   });
@@ -51,7 +65,7 @@ router.route('/:id')
   .get(async (req, res) => {
     const _id = req.params.id;
     try {
-      const transaction = await findTransactionById(_id);
+      const transaction = await Transaction.findById(_id);
       if (!transaction) {
         return res.status(404).json({ message: 'transaction not found' });
       }
