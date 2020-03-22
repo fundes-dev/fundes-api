@@ -1,4 +1,4 @@
-const dotenv = require('dotenv');
+require('dotenv').config();
 const express = require('express');
 
 const connectDB = require('./config/db');
@@ -8,8 +8,6 @@ const packageRouter = require('./routes/package');
 const transactionRouter = require('./routes/transaction');
 const donationRouter = require('./routes/donation');
 
-
-dotenv.config();
 const app = express();
 
 // Connect Database
