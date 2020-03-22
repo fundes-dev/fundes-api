@@ -23,11 +23,11 @@ router.route('/')
       res.status(400).send({ message: 'no such package found' });
       return;
     }
-    await user.populate('supportedPackages').execPopulate();
-    const userHasExistingDonation = user.supportedPackages.includes(targetPackage._id);
 
-    if (userHasExistingDonation) {
-      res.status(400).send({ message: 'invalid request, you already have a donation setup with this package' });
+    const existingDonation = await Donation.findOne({ user: user._id, package: npmPackage });
+
+    if (existingDonation) {
+      res.status(400).send({ message: 'invalid request, you already have a donation setup with this package', donation: existingDonation._id });
       return;
     }
     try {

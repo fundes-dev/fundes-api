@@ -97,9 +97,9 @@ userSchema.virtual('donations', {
 });
 
 userSchema.virtual('supportedPackages', {
-  ref: 'Package',
+  ref: 'Donation',
   localField: '_id',
-  foreignField: 'supporters',
+  foreignField: 'package',
 });
 
 module.exports = model('User', userSchema);

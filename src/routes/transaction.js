@@ -42,7 +42,7 @@ router.route('/')
         return;
       }
 
-      res.send({ transaction: { id: transaction._id } });
+      res.send({ transaction });
     } catch (e) {
       console.log(e);
       res.status(500).json({ message: 'internal server error' });

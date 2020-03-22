@@ -7,6 +7,9 @@ const router = express.Router();
 router.route('/')
   .get(async (req, res) => {
     const { name } = req.body;
+    if (!name) {
+      return res.status(404).json({ message: 'invalid request' });
+    }
     try {
       const npmPackage = await NpmPackage.findOne({ name });
       if (npmPackage) {
