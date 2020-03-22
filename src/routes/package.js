@@ -28,12 +28,42 @@ router.route('/')
           donations: [],
         });
         await newPackage.save();
-        return res.status(200).json({ data: newPackage });
+        return res.status(200).json({ npmPackage: newPackage });
       }
       return res.status(404).json({ message: 'package not found' });
     } catch (e) {
       return res.status(500).json({ message: 'internal server error' });
     }
   });
+
+router.route('/supporters')
+  .get(async (req, res) => {
+    const { id } = req.body;
+    try {
+      const npmPackage = await NpmPackage.findOne({ _id: id });
+      if (!npmPackage) {
+        return res.status(404).send({ message: 'package not found' });
+      }
+
+      await npmPackage.populate({
+        path: 'donations',
+        populate: {
+          path: 'user',
+        },
+      }).execPopulate();
+
+      const supporters = npmPackage.donations.map((donation) => {
+        const { user } = donation;
+        delete user.adminOf;
+
+        return user;
+      });
+      return res.status(200).send({ supporters });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).send({ message: 'internal server error' });
+    }
+  });
+
 
 module.exports = router;

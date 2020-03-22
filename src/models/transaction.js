@@ -4,6 +4,7 @@ const transactionSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'User',
   },
   amount: {
     type: Number,
@@ -22,13 +23,15 @@ const transactionSchema = new Schema({
     type: Number,
     required: true,
   },
-  packageID: {
+  package: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'Package',
   },
-  donationID: {
+  donation: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'Donation',
   },
 });
 
