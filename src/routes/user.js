@@ -3,6 +3,7 @@ const {
   createUser, findUserByEmail,
 } = require('../services/user');
 const auth = require('../middleware/auth');
+const Donation = require('../models/donation');
 
 const router = express.Router();
 
@@ -103,7 +104,7 @@ router.route('/logout')
     try {
       user.tokens = user.tokens.filter((token) => token.token !== reqToken);
       await user.save();
-      res.send();
+      res.send({ message: 'logout successful' });
     } catch (e) {
       res.status(500).send({ message: 'internal server error' });
     }

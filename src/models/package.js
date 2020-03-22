@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const PackageSchema = new Schema({
+const packageSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -30,14 +30,25 @@ const PackageSchema = new Schema({
     }],
     required: true,
   },
-  transactions: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-  },
-  donations: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-  },
 });
 
-module.exports = model('package', PackageSchema);
+packageSchema.virtual('transactions', {
+  ref: 'Transaction',
+  localField: '_id',
+  foreignField: 'package',
+});
+
+packageSchema.virtual('donations', {
+  ref: 'Donation',
+  localField: '_id',
+  foreignField: 'package',
+});
+
+// packageSchema.virtual('supporters', {
+//   ref: 'User',
+//   localField: '_id',
+//   foreignField: 'supporters',
+// });
+
+
+module.exports = model('Package', packageSchema);

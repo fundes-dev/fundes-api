@@ -36,18 +36,6 @@ const userSchema = new Schema({
   adminOf: {
     type: [String],
   },
-  transactions: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-  },
-  donations: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-  },
-  supportedPackages: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-  },
   tokens: [{
     token: {
       type: String,
@@ -95,5 +83,23 @@ userSchema.methods.toJSON = function getPublicProfile() {
 
   return publicUser;
 };
+
+userSchema.virtual('transactions', {
+  ref: 'Transaction',
+  localField: '_id',
+  foreignField: 'user',
+});
+
+userSchema.virtual('donations', {
+  ref: 'Donation',
+  localField: '_id',
+  foreignField: 'user',
+});
+
+userSchema.virtual('supportedPackages', {
+  ref: 'Package',
+  localField: '_id',
+  foreignField: 'supporters',
+});
 
 module.exports = model('User', userSchema);

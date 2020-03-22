@@ -1,9 +1,10 @@
 const { Schema, model } = require('mongoose');
 
 const donationSchema = new Schema({
-  userID: {
+  user: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'User',
   },
   recurrence: {
     type: String,
@@ -27,18 +28,21 @@ const donationSchema = new Schema({
   endDate: {
     type: Date,
   },
-  transactionIDs: {
-    type: [Schema.Types.ObjectId],
-    required: true,
-  },
-  packageID: {
+  package: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'Package',
   },
   isActive: {
     type: Boolean,
     required: true,
   },
+});
+
+donationSchema.virtual('transactions', {
+  ref: 'Transaction',
+  localField: '_id',
+  foreignField: 'donation',
 });
 
 module.exports = model('Donation', donationSchema);
