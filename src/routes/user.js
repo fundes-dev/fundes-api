@@ -3,7 +3,6 @@ const {
   createUser, findUserByEmail,
 } = require('../services/user');
 const auth = require('../middleware/auth');
-const Donation = require('../models/donation');
 
 const router = express.Router();
 
@@ -27,8 +26,8 @@ router.route('/')
       const user = await createUser({
         email, password, firstName, lastName,
       });
-      const token = await user.generateAuthToken();
-      res.send({ data: { user, token } });
+      // const token = await user.generateAuthToken();
+      res.send({ user });
     } catch (ex) {
       res.status(500).send({ message: 'internal server error' });
     }

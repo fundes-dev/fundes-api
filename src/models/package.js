@@ -44,11 +44,4 @@ packageSchema.virtual('donations', {
   foreignField: 'package',
 });
 
-// packageSchema.virtual('supporters', {
-//   ref: 'User',
-//   localField: '_id',
-//   foreignField: 'supporters',
-// });
-
-
 module.exports = model('Package', packageSchema);
