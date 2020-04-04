@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.route('/')
   .get(async (req, res) => {
-    const { name } = req.body;
+    const { name } = req.query;
     if (!name) {
       return res.status(404).json({ message: 'invalid request' });
     }
@@ -41,7 +41,7 @@ router.route('/')
 
 router.route('/supporters')
   .get(async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.query;
     try {
       const npmPackage = await NpmPackage.findOne({ _id: id });
       if (!npmPackage) {
