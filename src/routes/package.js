@@ -17,7 +17,7 @@ router.route('/')
       }
       const response = await fetch(`https://registry.npmjs.org/${name}`);
       const data = await response.json();
-      if (!data.error) {
+      if (data.name && data.description && data.maintainers && data.homepage) {
         const {
           _id, name: pkgName, description, maintainers, homepage,
         } = data;
@@ -35,6 +35,7 @@ router.route('/')
       }
       return res.status(404).json({ message: 'package not found' });
     } catch (e) {
+      console.log(e);
       return res.status(500).json({ message: 'internal server error' });
     }
   });
