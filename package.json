@@ -32,7 +32,7 @@
     "lodash.remove": "^4.7.0",
     "mem": ">=4.0.0",
     "mongoose": "^5.8.9",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "request": "^2.88.0",
     "uuid": "^3.4.0",
     "validator": "^12.2.0"
